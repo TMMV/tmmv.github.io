@@ -1,0 +1,5 @@
+{
+  "name": "Personal Timeline Website",
+  "description": "A single-page personal website to showcase work, education, and project history in a visually appealing timeline format that scrolls from current to past events.",
+  "requestFramePermissions": []
+}
