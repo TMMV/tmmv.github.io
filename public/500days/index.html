@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>500 Days of Pain</title>
+<meta name="description" content="500 days, 27 kilograms, one story.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7f2ea; --panel: #fbf7f0; --ink: #232019; --card: #2c2219;
+    --muted-l: #8b8478; --muted-d: #948c7f; --faded: #b6ad9d;
+    --rule-l: #e3dccd; --rule-d: #3a352c;
+    --coral: #e2674a; --coral-lt: #ef8b72; --coral-dk: #c9563b;
+    --disp: 'Cormorant Garamond', Georgia, serif;
+    --serif: 'Times New Roman', Times, serif;
+  }
+  html { scroll-snap-type: none; }   /* snapping handled in JS so pinned scrubs stay free */
+  html, body { margin: 0; background: var(--ink); }
+  * { box-sizing: border-box; }
+  body { font-family: var(--serif); color: var(--ink); }
+
+  /* gentle snap handled in JS; pinned sections stay free to scrub */
+  .slide { min-height: 100vh; display: flex; align-items: center; padding: 96px 0; background: var(--paper); }
+  .slide.dark { background: var(--ink); color: #f6f1e7; }
+  section.pin { display: block; padding: 0; }
+  .pin-inner { position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; padding: 60px 0 40px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; width: 100%; }
+
+  .eyebrow { font-size: 11px; letter-spacing: 3.5px; text-transform: uppercase; color: var(--muted-l); }
+  .dark .eyebrow { color: var(--muted-d); }
+  .giant { font-family: var(--disp); font-weight: 300; font-size: clamp(84px, 15vw, 200px); line-height: 0.9; margin-top: 18px; padding-bottom: 0.14em; }
+  .giant .unit { font-size: 0.28em; color: var(--muted-l); margin-left: 10px; display: inline-block; line-height: 1.15; }
+  .dark .giant .unit { color: var(--muted-d); }
+  .coral { color: var(--coral); }
+  .dark .coral { color: var(--coral-lt); }
+  h1, h2 { font-family: var(--disp); font-weight: 400; margin: 0; }
+  .lede { font-family: var(--disp); font-size: clamp(26px, 3.4vw, 42px); line-height: 1.12; margin-top: 20px; max-width: 22ch; }
+  .note { font-size: clamp(15px, 1.6vw, 19px); font-style: italic; line-height: 1.55; color: var(--muted-l); max-width: 52ch; margin: 18px 0 0; }
+  .dark .note { color: var(--faded); }
+
+  /* reveal-on-scroll */
+  .rv { opacity: 0; transform: translateY(26px); will-change: opacity, transform; }
+  .rv.on { opacity: 1; transform: none; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+  /* scroll ticker rail */
+  .tick-rail { position: fixed; top: 50%; right: 22px; transform: translateY(-50%); z-index: 30;
+    display: flex; flex-direction: column; gap: 18px; background: rgba(251,247,240,0.92);
+    backdrop-filter: blur(8px); border: 1px solid var(--rule-l); border-radius: 14px; padding: 20px 22px;
+    box-shadow: 0 12px 34px rgba(0,0,0,0.13); font-variant-numeric: tabular-nums; }
+  .rail-stat { display: flex; flex-direction: column; gap: 3px; }
+  .rail-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted-l); }
+  .rail-line { display: flex; align-items: baseline; gap: 4px; }
+  .rail-num { font-family: var(--disp); font-size: 38px; line-height: 1; color: var(--ink); }
+  .rail-unit { font-size: 13px; color: var(--muted-l); }
+  @media (max-width: 1499px) {
+    .tick-rail { top: auto; bottom: 0; right: 0; left: 0; transform: none; width: 100%; border-radius: 0;
+      flex-direction: row; align-items: center; justify-content: center; gap: 34px; padding: 11px 20px;
+      border: none; border-top: 1px solid var(--rule-l); box-shadow: 0 -6px 22px rgba(0,0,0,0.12); }
+    .tick-rail .rail-hideM { display: none; }
+    .tick-rail .rail-stat { flex-direction: row; align-items: baseline; gap: 8px; }
+  }
+  @media (max-width: 480px) {
+    .tick-rail { gap: 20px; }
+    .tick-rail .rail-num { font-size: 30px; }
+  }
+
+  /* cover */
+  #cover h1 { font-size: clamp(44px, 8.6vw, 128px); line-height: 0.95; letter-spacing: 0.5px; color: var(--paper); margin-top: 24px; }
+  #cover .note { margin-top: 30px; max-width: none; }
+  /* title block centres in the space above; the weight line sits at the bottom of the slide */
+  #cover .wrap { display: flex; flex-direction: column; min-height: calc(100vh - 192px); }
+  .cover-main { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
+  #cover .giant { font-size: clamp(72px, 12vw, 160px); }
+  .scroll-hint { display: flex; align-items: center; gap: 12px; margin-top: clamp(44px, 7vw, 84px);
+    font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted-d); }
+  .scroll-hint .tick { display: inline-block; width: 1px; height: 34px; background: var(--coral-lt); animation: drip 1.8s ease-in-out infinite; transform-origin: top; }
+  @keyframes drip { 0% { transform: scaleY(0); } 55% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* candle */
+  .flame { transform-origin: 30px 38px; animation: flicker 1.7s ease-in-out infinite; }
+  .glow { transform-origin: 30px 34px; animation: glowpulse 1.7s ease-in-out infinite; }
+  @keyframes flicker {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    28% { transform: scale(0.94, 1.06) rotate(-2deg); }
+    55% { transform: scale(1.04, 0.96) rotate(1.6deg); }
+    80% { transform: scale(0.97, 1.03) rotate(-1deg); }
+  }
+  @keyframes glowpulse { 0%, 100% { opacity: 0.10; } 50% { opacity: 0.17; } }
+
+  /* descent bar */
+  .descent-bar { margin-top: 56px; position: relative; height: 3px; background: var(--rule-l); }
+  .descent-bar .fill { position: absolute; inset: 0; width: 100%; background: var(--coral); }
+  .descent-bar .dot { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: var(--coral); transform: translate(-50%, -50%); box-shadow: 0 0 0 5px var(--paper); }
+  .descent-bar .dot.d1 { left: 100%; }
+  .descent-ends { display: flex; justify-content: space-between; margin-top: 18px; }
+  .descent-ends .big { font-family: var(--disp); font-size: 28px; }
+  .descent-ends .sm { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted-l); margin-top: 2px; }
+  .dark .descent-bar { background: var(--rule-d); }
+  .dark .descent-bar .dot { box-shadow: 0 0 0 5px var(--ink); }
+  .dark .descent-ends .sm { color: var(--muted-d); }
+  /* cover: the line fills in on page load */
+  /* the fill width and end-dot are driven per-frame by the flip counter (see script) */
+  #cover .descent-bar .fill { width: 0; }
+  #cover .descent-bar .dot.d1 { opacity: 0; transition: opacity 0.6s ease; }
+
+  /* top workouts ranking */
+  .ranklist { margin-top: 48px; display: flex; flex-direction: column; }
+  .rankrow { display: grid; grid-template-columns: clamp(34px, 6vw, 58px) minmax(110px, 200px) 1fr clamp(44px, 6vw, 70px); align-items: center; gap: 12px 18px; padding: 16px 0; border-top: 1px solid var(--rule-l); }
+  .rankrow:last-child { border-bottom: 1px solid var(--rule-l); }
+  .rank { font-family: var(--disp); font-size: clamp(26px, 3.4vw, 40px); color: var(--coral); }
+  .rname { font-family: var(--disp); font-size: clamp(20px, 2.6vw, 30px); }
+  .rbar { height: 6px; background: var(--rule-l); border-radius: 3px; overflow: hidden; }
+  .rbar i { display: block; height: 100%; width: 0; background: var(--coral); border-radius: 3px; transition: width 2.8s cubic-bezier(0.25, 0.6, 0.2, 1); }
+  .rcount { font-family: var(--disp); font-size: clamp(20px, 2.6vw, 30px); text-align: right; color: var(--muted-l); }
+  .dark .rankrow, .dark .rankrow:last-child { border-color: var(--rule-d); }
+  .dark .rbar { background: var(--rule-d); }
+  .dark .rank { color: var(--coral-lt); }
+  .dark .rcount { color: var(--muted-d); }
+  /* small screens: the bar drops to its own full-width row so the fill animation stays visible */
+  @media (max-width: 560px) {
+    .rankrow { grid-template-columns: 30px 1fr 52px; gap: 8px 12px; padding: 12px 0; }
+    .rbar { grid-column: 1 / -1; order: 1; height: 5px; }
+  }
+
+  /* stat cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; margin-top: 52px; }
+  .card { background: #2c2219; border-radius: 14px; padding: 30px 28px; }
+  .card .num { font-family: var(--disp); font-size: clamp(44px, 5vw, 58px); line-height: 1; color: var(--coral-lt); }
+  .card .label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted-d); margin-top: 10px; }
+  .card .sub { font-size: 13.5px; color: var(--faded); margin-top: 10px; line-height: 1.5; }
+
+  /* icon grids */
+  .grid-slot { margin-top: 40px; max-width: 680px; }
+
+  /* walk map */
+  .map-slot { margin-top: 44px; }
+  /* phones: the route turns portrait (Edinburgh top, London bottom) so the map uses the vertical space */
+  @media (max-width: 700px) {
+    .map-slot { margin-top: 20px; }
+    #walk-map { width: auto; max-width: 100%; height: min(46vh, 420px); margin: 0 auto; }
+  }
+
+  /* text left, artwork right */
+  .split { display: flex; align-items: center; gap: clamp(36px, 6vw, 90px); }
+  .split.bottom { align-items: flex-end; }
+  .split-text { flex: 1 1 auto; min-width: 0; }
+  /* fixed media column so every artwork sits on the same centre axis regardless of width */
+  .split-media { flex: 0 0 clamp(280px, 30vw, 430px); display: flex; align-items: center; justify-content: center; }
+  /* in split slides the unit sits on its own line so the number keeps the site-wide giant size */
+  .split .giant .unit { display: block; margin: 10px 0 0 6px; }
+  @media (max-width: 900px) {
+    .split, .split.bottom { flex-direction: column; align-items: stretch; gap: 40px; }
+    .split-media { flex-basis: auto; width: 100%; justify-content: center; }
+    /* keep shrinking smoothly through the breakpoint instead of jumping to the cap */
+    .split-media .art-stack, .split-media .stat-img { width: clamp(200px, 31vw, 420px); }
+  }
+  .stat-img { display: block; width: min(100%, 420px); height: auto; }
+  /* white ghost underlay + coral overlay that fills with the count */
+  .art-stack { position: relative; width: min(100%, 420px); }
+  .art-stack .art-under { display: block; width: 100%; height: auto; opacity: 0.32; }
+  .art-stack .stat-img { position: absolute; left: 0; top: 0; width: 100%; }
+  /* the <use> presentation attribute sets fill on cloned shapes but not stroke reliably; set it directly */
+  .art-stack .art-under circle { stroke: #f7f2ea; }
+  .art-stack .stat-img circle { stroke: #ef8b72; }
+  .media-ph { width: clamp(210px, 24vw, 300px); aspect-ratio: 3 / 4; border: 1.5px dashed #cfc4b1;
+    border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; color: var(--muted-l); }
+  .dark .media-ph { border-color: #4a3d31; color: var(--muted-d); }
+  .media-ph .ph-label { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; }
+  .media-ph .ph-sub { font-size: 12px; font-style: italic; }
+  [data-grid] { display: flex; flex-wrap: wrap; gap: 9px; align-items: flex-end; }
+  [data-ic] { display: flex; align-items: flex-end; opacity: 0; transform: scale(0.4); transform-origin: center bottom; }
+
+  /* when the ticker is a fixed bottom bar, keep all content clear of it */
+  @media (max-width: 1499px) {
+    .tick-rail { padding: 18px 24px; }
+    .slide { padding-bottom: 170px; }
+    #cover .wrap { min-height: calc(100vh - 266px); }
+    section.pin { padding-bottom: 0; }
+    .pin-inner, #trend > div, #population > div, #onfoot > div { padding-bottom: 150px !important; }
+  }
+  /* phones: give the portrait walk map the clearance the ticker actually needs, no more */
+  @media (max-width: 700px) {
+    #onfoot > div { padding-bottom: 110px !important; }
+  }
+  /* phones: compact cards and lists so each slide fits one screen and snaps cleanly;
+     the rail drops "Fat burned" to stop the bottom bar from cropping. The 170px/150px
+     bottom clearance above was sized for the desktop-width rail; on phones the rail is
+     only ~67px tall, so that much padding was making ordinary (non-pinned) slides taller
+     than the viewport. */
+  @media (max-width: 560px) {
+    .slide { padding-top: 56px; padding-bottom: 96px; }
+    .pin-inner, #trend > div, #population > div, #onfoot > div { padding-bottom: 96px !important; }
+    #cover .wrap { min-height: calc(100vh - 226px); }
+    .tick-rail .rail-fat { display: none; }
+    .cards { gap: 12px; margin-top: 30px; }
+    .card { padding: 18px 20px; border-radius: 12px; }
+    .card .num { font-size: 34px; }
+    .card .label { margin-top: 6px; font-size: 11px; }
+    .card .sub { margin-top: 6px; font-size: 12.5px; }
+    .ranklist { margin-top: 30px; }
+    /* let the two charts bleed past the wrap's side padding for more usable plot width */
+    #trend-chart-slot, #bell-chart-slot { margin: 0 -28px; }
+  }
+
+  /* cover: split-flap "500" that flips into place on load, like a day calendar */
+  .flipclock { display: inline-flex; gap: 0.075em; vertical-align: -0.2em; perspective: 6em;
+    font-variant-numeric: lining-nums tabular-nums; font-feature-settings: "lnum" 1, "tnum" 1; }
+  .fd { position: relative; display: inline-block; width: 0.7em; height: 1em;
+    border-radius: 0.07em; box-shadow: 0 0.05em 0.2em rgba(0,0,0,0.4); }
+  .fd .fd-h, .fd .fd-leaf {
+    position: absolute; left: 0; width: 100%; height: 50%; overflow: hidden;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+  .fd .fd-h span, .fd .fd-leaf span {
+    position: absolute; left: 0; width: 100%; height: 1em; line-height: 1em;
+    text-align: center; color: var(--coral-lt);
+    font-variant-numeric: lining-nums tabular-nums; font-feature-settings: "lnum" 1, "tnum" 1;
+  }
+  .fd .fd-top { top: 0; border-radius: 0.07em 0.07em 0 0; background: rgba(255,255,255,0.08); }
+  .fd .fd-bot { bottom: 0; border-radius: 0 0 0.07em 0.07em; background: rgba(255,255,255,0.02); }
+  .fd .fd-top span, .fd .fd-leaf-top span { top: 0; }
+  .fd .fd-bot span, .fd .fd-leaf-bot span { bottom: 0; }
+  .fd .fd-leaf { z-index: 2; }
+  .fd .fd-leaf-top { top: 0; transform-origin: 50% 100%; background: rgba(255,255,255,0.08); }
+  .fd .fd-leaf-bot { bottom: 0; transform-origin: 50% 0%; transform: rotateX(90deg); background: rgba(255,255,255,0.02); }
+  /* a dark crease so the fold reads clearly, like a real split-flap card */
+  .fd::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+    background: rgba(0,0,0,0.55); z-index: 3; transform: translateY(-1px); }
+
+  /* apples: hundreds of apples pour down behind the text and pile up, filling the slide */
+  .apple-field { position: absolute; inset: 0; overflow: hidden; }
+  .apple { position: absolute; transform: translateY(-150vh); opacity: 0; will-change: transform; }
+  .apple svg { display: block; width: 100%; height: 100%; }
+
+  /* squats: give the two jets a wider column so they read bigger */
+  #squats .split-media { flex: 0 0 clamp(320px, 44vw, 560px); }
+  /* salad: Big Ben silhouette fills in coral as the leaf-stack height counts up */
+  #salad .art-stack { width: min(100%, 105px); }
+  /* the artwork is very tall and narrow (a tower), so once the layout stacks text-over-media
+     (same 900px breakpoint as .split above) it's sized by height, not width -- a width-based
+     cap still leaves it tall enough to push the slide past one screen */
+  @media (max-width: 900px) {
+    #salad .art-stack { width: auto; height: 34vh; max-height: 300px; }
+    #salad .art-stack img { width: auto; height: 100%; }
+  }
+  /* squats: the 747s also shrink a touch sooner so the slide settles within one screen */
+  @media (max-width: 560px) { #squats .split-media { flex-basis: 260px; } }
+</style>
+</head>
+<body>
+
+<!-- SCROLL TICKER RAIL -->
+<div class="tick-rail">
+  <div class="rail-stat">
+    <div class="rail-label">Weight</div>
+    <div class="rail-line"><div id="tk-w" class="rail-num">102.1</div><span class="rail-unit">kg</span></div>
+  </div>
+  <div class="rail-stat rail-fat">
+    <div class="rail-label">Fat burned</div>
+    <div class="rail-line"><div id="tk-c" class="rail-num" style="color: var(--coral);">0</div><span class="rail-unit">kcal</span></div>
+  </div>
+  <div class="rail-hideM" style="display: flex; flex-direction: column; gap: 7px;">
+    <div class="rail-label" style="letter-spacing: 1.5px;">Day <span id="tk-d">0</span> of 500</div>
+    <div style="width: 120px; height: 4px; background: #e9e1d0; border-radius: 2px; overflow: hidden;"><div id="tk-fill" style="height: 100%; width: 0%; background: var(--coral);"></div></div>
+  </div>
+</div>
+
+<!-- 1 · COVER + THE BIG NUMBER (animates on page load) -->
+<section id="cover" class="slide dark">
+  <div class="wrap">
+    <div class="cover-main">
+      <div class="eyebrow rv">March 2025 &ndash; July 2026</div>
+      <h1 class="rv"><span id="flip500" class="flipclock coral" aria-label="500"></span> Days of Pain.</h1>
+      <p class="note rv">261 workouts. 280 tonnes lifted. 695 kilometres on foot. Nobody said it would be comfortable.</p>
+      <div class="scroll-hint rv" style="margin-top: clamp(28px, 4vw, 48px);"><span class="tick"></span> Scroll</div>
+    </div>
+    <!-- data: raw endpoints 102.14 → 75.00 -->
+    <div class="descent-bar rv" style="margin-top: 40px;"><div class="fill"></div><span class="dot"></span><span class="dot d1"></span></div>
+    <div class="descent-ends rv">
+      <div><div class="big">102.1 kg</div><div class="sm">March 10, 2025</div></div>
+      <div style="text-align: right;"><div class="big">74.0 kg</div><div class="sm">July 23, 2026</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · THE LONG VIEW (pinned, scroll-scrubbed) -->
+<section id="trend" class="slide pin" style="height: 240vh;">
+  <div style="position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; padding: 60px 0 40px;">
+    <div class="wrap">
+      <div class="eyebrow">The Long View</div>
+      <h2 style="font-size: clamp(30px, 4vw, 46px); line-height: 1.05; margin-top: 14px;">Five hundred days, one line.</h2>
+      <div style="margin-top: 34px;" id="trend-chart-slot"></div>
+      <div style="font-size: 13px; font-style: italic; color: var(--muted-l); margin-top: 10px;">Monthly averages of the daily log. Keep scrolling to trace the line.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · IN PERSPECTIVE: WHAT YOU PUT DOWN -->
+<section id="carried" class="slide dark">
+  <div class="wrap">
+   <div class="split">
+    <div class="split-text">
+      <div class="eyebrow rv">In Perspective</div>
+      <!-- raw endpoints: 102.14 → 74.0 = 28.1 kg lost ≈ 4 × 7 kg bowling balls (28 kg) -->
+      <div class="giant coral rv"><span class="count" data-to="28.1" data-dec="1">0.0</span><span class="unit">kg, set down</span></div>
+      <p class="note rv">Four 7-kilo bowling balls, the heavy ones from the back of the rack. You carried them everywhere, every single day, for years. And then you set them down.</p>
+    </div>
+    <div class="split-media rv">
+      <div class="grid-slot" id="bowling-grid" style="margin-top: 0; max-width: 300px;"></div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- 5 · IN PERSPECTIVE: CANDLE -->
+<section id="candle" class="slide">
+  <div class="wrap">
+   <div class="split">
+    <div class="split-text">
+      <div class="eyebrow rv">In Perspective</div>
+      <!-- ~23 kg of the 28.1 lost was fat (author ~17% body fat, Jul 2026) ≈ 177,000 kcal ≈ 741 MJ;
+           a dinner candle burns ~7 g/h of wax ≈ 320 kJ/h → ~2,300 hours -->
+      <div class="giant coral rv"><span class="count" data-to="2300">0</span><span class="unit">hours of candlelight</span></div>
+      <p class="note rv">At about 17% body fat today, roughly 23 of the 28 kilograms you lost were pure fat. That is some 177,000 kcal of stored energy. Burned as candle wax, it would outlast two thousand evenings.</p>
+    </div>
+    <div class="split-media rv">
+      <svg width="150" height="290" viewBox="0 0 60 120" style="display: block; overflow: visible;">
+        <ellipse cx="30" cy="34" rx="17" ry="20" fill="#ef8b72" opacity="0.10" class="glow"></ellipse>
+        <g class="flame">
+          <path d="M30 14 C 37 24, 38 30, 30 38 C 22 30, 23 24, 30 14 Z" fill="#e2674a"></path>
+          <path d="M30 24 C 33.5 29, 33.5 32, 30 36 C 26.5 32, 26.5 29, 30 24 Z" fill="#f7f2ea" opacity="0.85"></path>
+        </g>
+        <line x1="30" y1="46" x2="30" y2="39" stroke="#4a3d31" stroke-width="2"></line>
+        <rect x="21" y="46" width="18" height="66" rx="3" fill="#ef8b72"></rect>
+        <rect x="21" y="46" width="18" height="5" rx="2.5" fill="#c9563b"></rect>
+      </svg>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- 6 · IN PERSPECTIVE: SALAD (volume, not weight) -->
+<section id="salad" class="slide dark">
+  <div class="wrap">
+   <div class="split">
+    <div class="split-text">
+      <div class="eyebrow rv">In Perspective</div>
+      <!-- 894 bags × 180 g ≈ 161 kg ≈ 0.16 m³ of leaf; laid flat at ~18 cm²/leaf → ~90 m stack -->
+      <div class="giant coral rv"><span class="count" data-to="90">0</span><span class="unit">metres of leaves</span></div>
+      <p class="note rv">Two bags of salad nearly every day. Pressed flat, leaf on leaf, the pile would rise about ninety metres. A twenty-five-storey tower, nearly the height of Big Ben, eaten one forkful at a time.</p>
+    </div>
+    <div class="split-media rv">
+      <!-- Big Ben, the author's own artwork; white ghost under, coral fills as the metre count climbs -->
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="text-align: center; margin-bottom: 10px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted-d);">Big Ben &middot; 96 metres</div>
+        <div class="art-stack">
+          <img class="art-under" src="assets/big-ben-white.png" alt="">
+          <img class="stat-img" src="assets/big-ben.png" alt="Big Ben tower" data-fill-max="0.9375" style="clip-path: inset(100% 0 0 0);">
+        </div>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- 7 · IN PERSPECTIVE: APPLES (939 apples poured from the sky, filling the whole slide) -->
+<section id="apples" class="slide dark" style="position: relative; overflow: hidden;">
+  <div id="apple-field" class="apple-field rv">
+    <!-- 939 apples; poured in and pile up behind the text (built in JS) -->
+  </div>
+  <div class="wrap" style="position: relative; z-index: 2;">
+    <div class="eyebrow rv">In Perspective</div>
+    <!-- 939 apples × 180 g ≈ 169 kg -->
+    <div class="giant coral rv"><span class="count" data-to="939">0</span><span class="unit">apples eaten</span></div>
+    <p class="note rv">Nearly a thousand apples over five hundred days, about 169 kilos of fruit, poured from the sky one by one.</p>
+  </div>
+</section>
+
+<!-- 8 · DISCIPLINE -->
+<section id="streaks" class="slide">
+  <div class="wrap">
+    <div class="eyebrow rv">Discipline</div>
+    <h2 class="rv" style="font-size: clamp(30px, 4.6vw, 56px); line-height: 1.05; margin-top: 14px;">Five hundred days of saying no.</h2>
+    <!-- data: adherence.longest_streak_diet_max (11); cheat days = diet==0 minus sick/travel (13);
+         adherence.pct_days_max_diet (51) -->
+    <div class="cards">
+      <div class="card rv">
+        <div class="num"><span class="count" data-to="11">0</span></div>
+        <div class="label">day perfect streak</div>
+        <div class="sub">Eleven straight days of a perfect diet score, the longest clean run of the whole journey.</div>
+      </div>
+      <div class="card rv">
+        <div class="num"><span class="count" data-to="15">0</span></div>
+        <div class="label">honest cheat days</div>
+        <div class="sub">In five hundred days, once holidays and sick days are set aside. Pizza was behind nearly half of them.</div>
+      </div>
+      <div class="card rv">
+        <div class="num"><span class="count" data-to="50">0</span><span style="font-size: 0.55em;">%</span></div>
+        <div class="label">of days scored perfect</div>
+        <div class="sub">Every other day of the journey, the diet score came back full marks.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · TOP WORKOUTS -->
+<section id="workouts" class="slide">
+  <div class="wrap">
+    <div class="eyebrow rv">Your Top Workouts</div>
+    <h2 class="rv" style="font-size: clamp(30px, 4.6vw, 56px); line-height: 1.05; margin-top: 14px;">Strength topped the list, with HIIT right on its heels.</h2>
+    <!-- data: weight_expanded.xlsx session counts; Walks = 18 logged + 42 office commutes -->
+    <div class="ranklist">
+      <div class="rankrow rv"><div class="rank">1</div><div class="rname">Strength</div><div class="rbar"><i data-w="100"></i></div><div class="rcount">102</div></div>
+      <div class="rankrow rv"><div class="rank">2</div><div class="rname">HIIT</div><div class="rbar"><i data-w="88"></i></div><div class="rcount">90</div></div>
+      <div class="rankrow rv"><div class="rank">3</div><div class="rname">Walks</div><div class="rbar"><i data-w="59"></i></div><div class="rcount">60</div></div>
+      <div class="rankrow rv"><div class="rank">4</div><div class="rname">Vest walks</div><div class="rbar"><i data-w="26"></i></div><div class="rcount">27</div></div>
+      <div class="rankrow rv"><div class="rank">5</div><div class="rname">Core work</div><div class="rbar"><i data-w="24"></i></div><div class="rcount">24</div></div>
+    </div>
+    <p class="note rv">261 workouts, plus the 42 walked commutes. Around 204 hours in motion.</p>
+  </div>
+</section>
+
+<!-- 10 · THE HEAVY STUFF -->
+<section id="lifted" class="slide dark">
+  <div class="wrap">
+   <div class="split">
+    <div class="split-text">
+      <div class="eyebrow rv">The Heavy Stuff</div>
+      <!-- data: weight_expanded.xlsx strength_volume_kg (~279,600 kg) -->
+      <div class="giant coral rv"><span class="count" data-to="280">0</span><span class="unit">tonnes lifted</span></div>
+      <p class="note rv">Across 102 strength sessions you moved an estimated 29,300 reps of iron. Add it all up and you lifted about forty adult elephants.</p>
+    </div>
+    <div class="split-media rv">
+      <div class="grid-slot" id="elephant-grid" style="margin-top: 0;"></div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- 6 · ON FOOT: EDINBURGH → LONDON -->
+<section id="onfoot" class="slide pin" style="height: 240vh;">
+  <div style="position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; padding: 60px 0 40px;">
+   <div class="wrap">
+    <div class="eyebrow">On Foot</div>
+    <!-- data: ~65 h logged walking (42 h vested) + 42 office days × 2 h commute ≈ 148 h → ~695 km -->
+    <div class="giant coral"><span id="onfoot-km">0</span><span class="unit">km walked</span></div>
+    <p class="note">Sixty-five hours of logged walks, forty-two of them under a weighted vest, plus forty-two office days walked there and back. Around 150 hours on foot: you walked the length of Britain, Edinburgh to London. Keep scrolling.</p>
+    <div class="map-slot">
+      <svg id="walk-map" viewBox="0 0 1000 250" width="100%" style="display: block; overflow: visible;">
+        <path id="walk-route" d="M 50 42 C 190 20, 300 95, 430 110 C 560 125, 620 90, 720 130 C 830 174, 900 200, 952 212"
+              fill="none" stroke="#cfc4b1" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"></path>
+        <path id="walk-done" d="M 50 42 C 190 20, 300 95, 430 110 C 560 125, 620 90, 720 130 C 830 174, 900 200, 952 212"
+              fill="none" stroke="#e2674a" stroke-width="2.5" stroke-linecap="round"></path>
+        <g id="walk-cities"></g>
+        <g id="walker">
+          <circle r="12" fill="#e2674a" opacity="0.15"></circle>
+          <circle r="5.5" fill="#e2674a"></circle>
+          <text id="walker-km" y="-16" text-anchor="middle" fill="#e2674a" font-size="15" font-family="'Cormorant Garamond', Georgia, serif">0 km</text>
+        </g>
+      </svg>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- 12 · THE SQUAT COUNT -->
+<section id="squats" class="slide dark">
+  <div class="wrap">
+   <div class="split">
+    <div class="split-text">
+      <div class="eyebrow rv">The Squat Count</div>
+      <!-- HIIT = Growing Annanas, ~7.5 squats/min × 1,607 logged HIIT minutes ≈ 12,000 squats.
+           A bodyweight squat lifts ~85% of you; mean weight on HIIT days ~88 kg → ~75 kg per rep
+           × 12,000 ≈ 906 t. A loaded Boeing 747-8 at MTOW is 448 t, so ~two of them. -->
+      <div class="giant coral rv"><span class="count" data-to="906">0</span><span class="unit">tonnes, legs only</span></div>
+      <p class="note rv">Some 12,000 Growing Annanas squats, each one lifting most of you off the floor. Over five hundred days your legs hoisted more than two fully loaded Boeing 747s, one rep at a time.</p>
+    </div>
+    <div class="split-media rv">
+      <!-- a simple 747 silhouette; white ghost under, coral fills with the count -->
+      <div class="art-stack" style="width: min(100%, 560px);">
+        <svg class="art-under" width="1000" height="560" viewBox="0 0 1000 560" style="display: block; width: 100%; height: auto;">
+          <defs>
+            <path id="plane747" d="
+              M 40 218
+              C 52 196, 78 178, 112 168
+              C 146 158, 196 152, 250 154
+              C 300 156, 340 166, 382 178
+              L 740 180
+              L 890 70 L 926 70 L 902 182
+              C 928 184, 948 194, 956 206
+              C 940 218, 906 226, 862 230
+              L 700 240
+              C 600 248, 480 252, 380 252
+              L 340 252
+              C 220 252, 110 244, 62 232
+              C 48 228, 40 224, 40 218
+              Z
+              M 380 236 L 520 236 L 700 330 L 646 342 L 448 260 L 380 252 Z
+              M 452 268 m -34 12 a 34 17 0 1 0 68 0 a 34 17 0 1 0 -68 0
+              M 566 306 m -32 15 a 32 16 0 1 0 64 0 a 32 16 0 1 0 -64 0
+              M 828 216 L 962 176 L 972 190 L 850 232 Z"></path>
+          </defs>
+          <use href="#plane747" transform="translate(40,20) scale(0.6)" fill="#f7f2ea"></use>
+          <use href="#plane747" transform="translate(380,300) scale(0.6)" fill="#f7f2ea"></use>
+        </svg>
+        <svg class="stat-img" data-fill="ltr" width="1000" height="560" viewBox="0 0 1000 560" style="clip-path: inset(0 100% 0 0);">
+          <use href="#plane747" transform="translate(40,20) scale(0.6)" fill="#ef8b72"></use>
+          <use href="#plane747" transform="translate(380,300) scale(0.6)" fill="#ef8b72"></use>
+        </svg>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- 12 · AGAINST THE UK POPULATION (pinned, scroll-scrubbed) — the finale -->
+<section id="population" class="slide pin" style="height: 300vh;">
+  <div id="pop-pin" style="position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; padding: 60px 0 40px;">
+    <div class="wrap">
+      <div class="eyebrow">Against the UK Population</div>
+      <h2 style="font-size: clamp(30px, 4vw, 46px); line-height: 1.05; margin-top: 14px;">Moving through the crowd.</h2>
+      <div style="margin-top: 14px; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.5; color: #4a463d; max-width: 60ch;">At a BMI of <strong id="bell-bmi-inline" style="font-weight: normal; color: var(--ink);">31.5</strong>, you <span id="bell-verb">were</span> leaner than <strong id="bell-pct" style="font-weight: normal; color: var(--coral);">17</strong>% of UK adults, <span id="bell-cat" style="font-style: italic;">in the obese range</span>. Keep scrolling.</div>
+      <div style="margin-top: 30px;" id="bell-chart-slot"></div>
+      <div id="pop-hint" style="display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: #a79d8c; margin-top: 10px; transition: opacity 0.4s;">
+        <span style="display: inline-block; width: 26px; height: 1px; background: #cfc4b1;"></span>
+        Scroll to watch yourself move through the crowd
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · OUTRO -->
+<section id="outro" class="slide dark">
+  <div class="wrap">
+    <div class="eyebrow rv">The End &middot; For Now</div>
+    <div class="lede rv" style="font-size: clamp(40px, 6.5vw, 88px); max-width: 18ch;">Day 500. Seventy-four kilograms. <span class="coral">Worth every gram.</span></div>
+    <!-- data: goal 72 kg; final 74.0 kg -->
+    <p class="note rv" style="font-size: clamp(17px, 1.8vw, 21px);">Seventy-two is two kilograms away. After five hundred days of pain, that&rsquo;s a stroll.</p>
+  </div>
+</section>
+
+<script src="assets/matter.min.js"></script>
+<script>
+(function () {
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+  var set = function (id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; };
+
+  // Ticker endpoints: raw first and last weigh-ins (linear interpolation across the scroll)
+  var W_START = 102.14, W_END = 74.0;
+  // Monthly means of the 7-day smoothed series (chart only); final month set to the day-501 endpoint
+  var MONTHLY = [100.8, 97.1, 94.1, 91.2, 88.4, 86.2, 84.4, 82.2, 80.6, 79.4, 78.7, 77.7, 76.4, 75.6, 75.0, 74.6, 74.0];
+  // Total fat energy burned: ~23 kg of fat lost (author ~17% body fat, Jul 2026) × 7,700 kcal/kg
+  // ≈ 177,000 kcal — matches the candle slide and the author's ~500 kcal/day deficit
+  var TOTAL_KCAL = 177000;
+  var TOTAL_KM = 695;
+
+  /* ---------- trend chart (paper theme) ----------
+     fs ("font scale") corrects for the viewBox shrinking all text/strokes proportionally as
+     the container narrows: on a ~326px-wide phone .wrap, a 1080-unit-wide viewBox renders at
+     roughly a third of desktop scale, so 12-unit labels become ~4px on screen. fs is computed
+     from the actual rendered width at call time so labels stay a legible size on any device. */
+  function buildTrendChart(fs) {
+    fs = fs || 1;
+    // margins/offsets grow too (dampened), so bigger labels get more room instead of
+    // colliding with the plot or each other; the plot area shrinks a bit to make space,
+    // which is the right trade on a narrow screen
+    var fm = 1 + (fs - 1) * 0.7;
+    // on narrow screens the y-axis scale is dropped (the start/end callouts already state
+    // the actual weights) so the plot can use the reclaimed width instead
+    var mobile = fs > 1.4;
+    var accent = '#e2674a', rule = '#e3dccd', muted = '#8b8478', ink = '#232019', paper = '#f7f2ea';
+    var disp = "'Cormorant Garamond', Georgia, serif", serif = "'Times New Roman', Times, serif";
+    var ws = MONTHLY;
+    // the end-point label used to sit beside its dot, which needed a big reserved right
+    // margin and left the chart lopsided (nothing held that much space on the left); now that
+    // both callouts sit above their dots instead, only a sliver of margin is needed either side
+    var n = ws.length, W = 1080, H = 400, ml = mobile ? 14 : 54 * fm, mr = 20 * fm, mt = 46 * fm, mb = 46 * fm;
+    var plotW = W - ml - mr, plotH = H - mt - mb, wmin = 70, wmax = 104;
+    var X = function (i) { return ml + (i / (n - 1)) * plotW; };
+    var Y = function (v) { return mt + (wmax - v) / (wmax - wmin) * plotH; };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block">';
+    s += '<defs><linearGradient id="wlfade" x1="0" y1="0" x2="0" y2="1">' +
+         '<stop offset="0%" stop-color="' + accent + '" stop-opacity="0.20"/>' +
+         '<stop offset="100%" stop-color="' + accent + '" stop-opacity="0"/></linearGradient></defs>';
+    [70, 80, 90, 100].forEach(function (g) {
+      s += '<line x1="' + ml + '" x2="' + (ml + plotW) + '" y1="' + Y(g) + '" y2="' + Y(g) + '" stroke="' + rule + '" stroke-width="' + fs + '"/>';
+      if (!mobile) s += '<text x="' + (ml - 12 * fm) + '" y="' + (Y(g) + 4 * fm) + '" text-anchor="end" fill="' + muted + '" font-size="' + (12 * fs).toFixed(1) + '" font-family="' + disp + '">' + g + '</text>';
+    });
+    // fewer x-axis labels on narrow screens -- 9 labels at the bigger mobile font size crowd into each other
+    var months = fs > 1.4
+      ? [[0, 'MAR ’25'], [4, 'JUL'], [8, 'NOV'], [12, 'MAR ’26'], [16, 'JUL']]
+      : [[0, 'MAR ’25'], [2, 'MAY'], [4, 'JUL'], [6, 'SEP'], [8, 'NOV'], [10, 'JAN ’26'], [12, 'MAR'], [14, 'MAY'], [16, 'JUL']];
+    months.forEach(function (t, ti) {
+      // the first/last ticks sit right at the plot edges -- anchor them inward instead of
+      // centring, or their text would spill past x=0 / the viewBox's right edge and clip
+      var anchor = ti === 0 ? 'start' : ti === months.length - 1 ? 'end' : 'middle';
+      s += '<text x="' + X(t[0]) + '" y="' + (mt + plotH + 22 * fm) + '" text-anchor="' + anchor + '" fill="' + muted + '" font-size="' + (10.5 * fs).toFixed(1) + '" letter-spacing="' + (0.8 * fs).toFixed(2) + '" font-family="' + serif + '">' + t[1] + '</text>';
+    });
+    var d = 'M ' + X(0) + ' ' + Y(ws[0]);
+    for (var i = 1; i < n; i++) d += ' L ' + X(i) + ' ' + Y(ws[i]);
+    s += '<path d="' + d + ' L ' + X(n - 1) + ' ' + (mt + plotH) + ' L ' + X(0) + ' ' + (mt + plotH) + ' Z" fill="url(#wlfade)"/>';
+    s += '<path id="trend-line" d="' + d + '" fill="none" stroke="' + accent + '" stroke-width="' + (1.75 * fs).toFixed(2) + '" stroke-linejoin="round" stroke-linecap="round"/>';
+    s += '<circle cx="' + X(0) + '" cy="' + Y(ws[0]) + '" r="' + (3.2 * fs).toFixed(2) + '" fill="' + paper + '" stroke="' + ink + '" stroke-width="' + (1.3 * fs).toFixed(2) + '"/>';
+    // both callouts sit stacked directly above their dot -- start anchored top-left (text
+    // grows rightward from the dot's x), end anchored top-right (grows leftward, ending at
+    // the dot's x) -- so neither needs side clearance, freeing the margins on both edges
+    s += '<text x="' + X(0) + '" y="' + (Y(ws[0]) - 24 * fm) + '" text-anchor="start" fill="' + ink + '" font-size="' + (18 * fs).toFixed(1) + '" font-family="' + disp + '">102.1 kg</text>';
+    s += '<text x="' + X(0) + '" y="' + (Y(ws[0]) - 9 * fm) + '" text-anchor="start" fill="' + muted + '" font-size="' + (10 * fs).toFixed(1) + '" letter-spacing="' + (0.8 * fs).toFixed(2) + '" font-family="' + serif + '">MARCH 10, 2025</text>';
+    s += '<circle cx="' + X(n - 1) + '" cy="' + Y(ws[n - 1]) + '" r="' + (6.5 * fs).toFixed(2) + '" fill="' + accent + '" opacity="0.16"/>';
+    s += '<circle cx="' + X(n - 1) + '" cy="' + Y(ws[n - 1]) + '" r="' + (3.8 * fs).toFixed(2) + '" fill="' + accent + '"/>';
+    s += '<text x="' + X(n - 1) + '" y="' + (Y(ws[n - 1]) - 24 * fm) + '" text-anchor="end" fill="' + accent + '" font-size="' + (20 * fs).toFixed(1) + '" font-family="' + disp + '">74.0 kg</text>';
+    s += '<text x="' + X(n - 1) + '" y="' + (Y(ws[n - 1]) - 9 * fm) + '" text-anchor="end" fill="' + muted + '" font-size="' + (10 * fs).toFixed(1) + '" letter-spacing="' + (0.8 * fs).toFixed(2) + '" font-family="' + serif + '">JULY 23, 2026</text>';
+    return s + '</svg>';
+  }
+
+  /* ---------- UK population bell curve ----------
+     UK adults approximated as Normal(mean 27, SD 4.8): reproduces ~26% obese (BMI>30)
+     and ~64% overweight-or-obese (BMI>25) from the Health Survey for England. */
+  var B_MEAN = 27, B_SD = 4.8;
+  function buildBellChart(fs) {
+    fs = fs || 1;
+    // margins grow too (dampened), matching buildTrendChart, so the bigger mobile labels get
+    // more room instead of colliding or spilling past the viewBox
+    var fm = 1 + (fs - 1) * 0.7;
+    // the 1000×300 box (10:3) renders very short once width shrinks on a phone -- taller the
+    // canvas as fm grows so the curve/dots/labels keep real vertical room instead of getting
+    // squashed flat
+    var H = 300 + Math.max(0, fm - 1) * 260;
+    var serif = "'Times New Roman', Times, serif", disp = "'Cormorant Garamond', Georgia, serif";
+    var bmiMin = 16, bmiMax = 40, bx0 = 60 * fm, bx1 = 1000 - 60 * fm, byB = H - 50 * fm, byT = 54 * fm;
+    var bxx = function (v) { return bx0 + (v - bmiMin) / (bmiMax - bmiMin) * (bx1 - bx0); };
+    var gauss = function (v) { return Math.exp(-0.5 * Math.pow((v - B_MEAN) / B_SD, 2)); };
+    var bp = '';
+    for (var i = 0; i <= 160; i++) {
+      var v = bmiMin + (bmiMax - bmiMin) * i / 160;
+      bp += (i === 0 ? 'M' : 'L') + bxx(v).toFixed(1) + ' ' + (byB - gauss(v) * (byB - byT)).toFixed(1) + ' ';
+    }
+    var bellArea = bp + 'L' + bx1 + ' ' + byB + ' L' + bx0 + ' ' + byB + ' Z';
+    var healthyX = bxx(18.5), healthyW = bxx(25) - bxx(18.5), meanX = bxx(B_MEAN), startX = bxx(31.5);
+    var catFor = function (v) { return v >= 30 ? '#b06a4e' : v >= 25 ? '#c39a5f' : v >= 18.5 ? '#4a7d5f' : '#7c8a80'; };
+    var s = '<svg viewBox="0 0 1000 ' + H.toFixed(0) + '" width="100%" style="display:block; overflow:visible">';
+    s += '<defs><clipPath id="bellClip"><path d="' + bellArea + '"/></clipPath></defs>';
+    s += '<rect x="' + healthyX + '" y="' + (byT - 14) + '" width="' + healthyW + '" height="' + (byB - byT + 14) + '" fill="#4a7d5f" opacity="0.09"/>';
+    s += '<path d="' + bellArea + '" fill="#e7ddc9" opacity="0.55"/>';
+    // stippled "crowd": deterministic dots, density follows the curve, coloured by BMI band
+    var seed = 20260705;
+    var rnd = function () { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+    var dots = '';
+    for (var c = 0; c < 128; c++) {
+      var vv = bmiMin + (bmiMax - bmiMin) * (c + 0.5) / 128;
+      var dens = gauss(vv), count = Math.round(dens * 15), colX = bxx(vv);
+      for (var k = 0; k < count; k++) {
+        var yTop = byB - dens * (byB - byT);
+        var y = yTop + (byB - yTop) * rnd();
+        dots += '<circle cx="' + (colX + (rnd() - 0.5) * 6).toFixed(1) + '" cy="' + y.toFixed(1) + '" r="1.7" fill="' + catFor(vv) + '" opacity="0.5"/>';
+      }
+    }
+    s += '<g clip-path="url(#bellClip)">' + dots + '</g>';
+    s += '<path d="' + bp + '" fill="none" stroke="#8f8472" stroke-width="' + (1.75 * fs).toFixed(2) + '" stroke-linejoin="round"/>';
+    s += '<line x1="' + (bx0 - 6) + '" x2="' + (bx1 + 6) + '" y1="' + byB + '" y2="' + byB + '" stroke="#bcb09b" stroke-width="' + (1.25 * fs).toFixed(2) + '"/>';
+    // the full "HEALTHY 18.5–25" label runs long at the bigger mobile font and can reach as
+    // far as the marker box; the range is already shown by the shaded rect + axis ticks, so
+    // drop the numbers here once labels are scaled up
+    s += '<text x="' + (healthyX + 4 * fm) + '" y="' + (byT - 22 * fm) + '" text-anchor="start" fill="#4a7d5f" font-size="' + (11.5 * fs).toFixed(1) + '" letter-spacing="' + (1.5 * fs).toFixed(2) + '" font-family="' + serif + '">' + (fs > 1.4 ? 'HEALTHY' : 'HEALTHY 18.5–25') + '</text>';
+    s += '<line x1="' + meanX + '" x2="' + meanX + '" y1="' + (byT - 6 * fm) + '" y2="' + byB + '" stroke="#8b8478" stroke-width="1" stroke-dasharray="2 5"/>';
+    s += '<text x="' + meanX + '" y="' + (byB + 32 * fm) + '" text-anchor="middle" fill="#8b8478" font-size="' + (11 * fs).toFixed(1) + '" letter-spacing="' + (1.5 * fs).toFixed(2) + '" font-family="' + serif + '">UK AVERAGE</text>';
+    [18.5, 25, 30, 35].forEach(function (v) {
+      s += '<line x1="' + bxx(v) + '" x2="' + bxx(v) + '" y1="' + byB + '" y2="' + (byB + 5) + '" stroke="#bcb09b" stroke-width="1"/>';
+      s += '<text x="' + bxx(v) + '" y="' + (byB + 18 * fm) + '" text-anchor="middle" fill="#a79d8c" font-size="' + (11 * fs).toFixed(1) + '" font-family="' + serif + '">' + v + '</text>';
+    });
+    s += '<text x="' + (bx1 + 6) + '" y="' + (byB + 18 * fm) + '" text-anchor="end" fill="#bcb09b" font-size="' + (10 * fs).toFixed(1) + '" letter-spacing="1" font-family="' + serif + '">BMI</text>';
+    // the marker's box/offsets scale with fm and its text with fs, same convention as the
+    // rest of the chart, so the "YOU" tag stays legible instead of staying pinned to a
+    // fixed tiny size while everything around it grows
+    s += '<g id="bell-marker" transform="translate(' + startX.toFixed(1) + ',0)">' +
+      '<line x1="0" x2="0" y1="' + (byT - 30 * fm) + '" y2="' + byB + '" stroke="#e2674a" stroke-width="' + (2 * fs).toFixed(2) + '"/>' +
+      '<circle cx="0" cy="' + byB + '" r="' + (5.5 * fs).toFixed(2) + '" fill="#e2674a" stroke="#f7f2ea" stroke-width="' + (1.5 * fs).toFixed(2) + '"/>' +
+      '<rect x="' + (-34 * fm).toFixed(1) + '" y="' + (byT - 56 * fm) + '" width="' + (68 * fm).toFixed(1) + '" height="' + (32 * fm).toFixed(1) + '" rx="' + (6 * fm).toFixed(1) + '" fill="#e2674a"/>' +
+      '<path d="M ' + (-6 * fm).toFixed(1) + ' ' + (-25 * fm).toFixed(1) + ' L ' + (6 * fm).toFixed(1) + ' ' + (-25 * fm).toFixed(1) + ' L 0 ' + (-18 * fm).toFixed(1) + ' Z" transform="translate(0,' + byT + ')" fill="#e2674a"/>' +
+      '<text x="0" y="' + (byT - 40 * fm) + '" text-anchor="middle" fill="#fff" font-size="' + (9 * fs).toFixed(1) + '" letter-spacing="' + (1.5 * fs).toFixed(2) + '" font-family="' + serif + '">YOU</text>' +
+      '<text id="bell-bmi" x="0" y="' + (byT - 27 * fm) + '" text-anchor="middle" fill="#fff" font-size="' + (15 * fs).toFixed(1) + '" font-family="' + disp + '">31.5</text></g>';
+    return s + '</svg>';
+  }
+
+  /* ---------- infographic icon grids ---------- */
+  var coral = '#ef8b72', coralDk = '#c9563b', coralLt = '#f6b39e', cardBg = '#2c2219';
+  function svgIcon(w, h, inner) { return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 24 24" fill="none" style="display:block">' + inner + '</svg>'; }
+  var ICONS = {
+    elephant: svgIcon(46, 46, '<circle cx="6" cy="10" r="5" fill="' + coral + '"/><circle cx="18" cy="10" r="5" fill="' + coral + '"/><circle cx="12" cy="11" r="5.6" fill="' + coral + '"/><rect x="10.4" y="12" width="3.2" height="8.4" rx="1.6" fill="' + coral + '"/><circle cx="9.6" cy="10" r="0.85" fill="' + cardBg + '"/><circle cx="14.4" cy="10" r="0.85" fill="' + cardBg + '"/>'),
+    bowling: svgIcon(130, 130, '<circle cx="12" cy="12" r="10" fill="' + coral + '"/><circle cx="9.6" cy="8.4" r="1.15" fill="' + cardBg + '"/><circle cx="13.9" cy="7.8" r="1.15" fill="' + cardBg + '"/><circle cx="12.6" cy="11.4" r="1.15" fill="' + cardBg + '"/>'),
+    keg: svgIcon(40, 54, '<rect x="7" y="2.5" width="10" height="19" rx="2.2" fill="' + coral + '"/><rect x="6" y="6.4" width="12" height="1.5" rx="0.7" fill="' + cardBg + '"/><rect x="6" y="15.6" width="12" height="1.5" rx="0.7" fill="' + cardBg + '"/><ellipse cx="12" cy="2.8" rx="5" ry="1.4" fill="' + coralDk + '"/>')
+  };
+  function fillGrid(slotId, count, icon) {
+    var slot = document.getElementById(slotId);
+    if (!slot) return;
+    var out = '<div data-grid="1">';
+    for (var i = 0; i < count; i++) out += '<div data-ic="1">' + icon + '</div>';
+    slot.innerHTML = out + '</div>';
+  }
+
+  // the axis labels were sized for the desktop .wrap's ~1016px inner width; on a narrower
+  // wrap, grow them so the effective on-screen size (after the SVG's own viewBox scaling)
+  // stays legible instead of shrinking with the container
+  var trendSlot = document.getElementById('trend-chart-slot');
+  var bellSlot = document.getElementById('bell-chart-slot');
+  var chartFs = function (slot) { return Math.max(1, 1016 / (slot.clientWidth || 1016)); };
+  trendSlot.innerHTML = buildTrendChart(chartFs(trendSlot));
+  bellSlot.innerHTML = buildBellChart(chartFs(bellSlot));
+  fillGrid('elephant-grid', 40, ICONS.elephant);
+  fillGrid('bowling-grid', 4, ICONS.bowling);
+
+  /* ---------- cover: split-flap "500" ---------- */
+  (function () {
+    var host = document.getElementById('flip500');
+    if (!host) return;
+    var TARGET = '500';
+    var digits = TARGET.split('').map(function (d) {
+      var fd = document.createElement('span');
+      fd.className = 'fd';
+      fd.innerHTML =
+        '<span class="fd-h fd-top"><span>0</span></span>' +
+        '<span class="fd-h fd-bot"><span>0</span></span>' +
+        '<span class="fd-leaf fd-leaf-top"><span>0</span></span>' +
+        '<span class="fd-leaf fd-leaf-bot"><span>0</span></span>';
+      host.appendChild(fd);
+      return { el: fd, top: fd.querySelector('.fd-top span'), bot: fd.querySelector('.fd-bot span'),
+               lt: fd.querySelector('.fd-leaf-top span'), lb: fd.querySelector('.fd-leaf-bot span'),
+               leafTop: fd.querySelector('.fd-leaf-top'), leafBot: fd.querySelector('.fd-leaf-bot'),
+               shown: 0, target: parseInt(d, 10) };
+    });
+
+    function setStatic(g, n) { g.top.textContent = g.bot.textContent = n; }
+    digits.forEach(function (g) { setStatic(g, 0); });
+
+    // one fold (~120 ms): old digit folds away, new digit drops in. If this wheel is
+    // still mid-fold (fast spin), just snap the faces so folds never pile up.
+    function flip(g, next) {
+      if (next === g.shown) return;
+      g.shown = next;
+      if (g.busy) { g.top.textContent = g.bot.textContent = next; return; }
+      g.busy = true;
+      g.lt.textContent = g.top.textContent;   // upper leaf keeps the OLD digit, then folds down
+      g.lb.textContent = next;                 // lower leaf shows the NEW digit, then folds up
+      g.top.textContent = next;                // new top waits behind the falling leaf
+      g.leafTop.style.transition = g.leafBot.style.transition = 'none';
+      g.leafTop.style.transform = 'rotateX(0deg)';
+      g.leafBot.style.transform = 'rotateX(90deg)';
+      g.leafTop.style.opacity = g.leafBot.style.opacity = '1';
+      void g.el.offsetWidth;                   // force reflow before animating
+      g.leafTop.style.transition = 'transform 0.15s cubic-bezier(0.5, 0, 0.85, 0.4)';
+      g.leafTop.style.transform = 'rotateX(-90deg)';
+      setTimeout(function () {
+        g.bot.textContent = g.shown;           // reveal current bottom, then raise the lower leaf
+        g.lb.textContent = g.shown;
+        g.leafBot.style.transition = 'transform 0.15s cubic-bezier(0.15, 0.6, 0.5, 1)';
+        g.leafBot.style.transform = 'rotateX(0deg)';
+        setTimeout(function () {
+          g.leafTop.style.opacity = g.leafBot.style.opacity = '0';
+          g.busy = false;
+        }, 150);
+      }, 150);
+    }
+
+    // count up 0 -> 500 as ONE coupled number: render the whole value each frame and let
+    // each wheel flip only when its own digit changes. The units wheel turns fastest, the
+    // hundreds only ever climbs 0->5 (never 9), easing to a clean stop -- motion runs right-to-left.
+    var TARGET = 500, N = digits.length;
+    function render(num) {
+      var s = '' + num;
+      while (s.length < N) s = '0' + s;
+      digits.forEach(function (g, i) { flip(g, +s.charAt(i)); });
+    }
+    // the cover's weight line tracks the same value (fill = day / 500)
+    var coverBar = document.querySelector('#cover .descent-bar');
+    var barFill = coverBar ? coverBar.querySelector('.fill') : null;
+    var barDot = coverBar ? coverBar.querySelector('.dot.d1') : null;
+    if (barFill) { barFill.style.transition = 'none'; barFill.style.width = '0%'; }
+    setTimeout(function () {
+      // a long, slow race up to 497 (the ease-out tail lands later, near 97/98 rather than
+      // 95), then quick steps to 498/499, then a long dramatic hold before the final flip to
+      // 500 (which gets its own visible fold, not an instant snap)
+      var start = null, TA = 5500;
+      var RAMP_TARGET = 497;
+      var HOLD = [400, 700, 2200];    // time spent showing 497,498,499: a smooth build, not a dip-then-jump
+      var POST_FLIP = 500;                          // let the 499->500 fold finish before locking
+      var REMAIN = 500 - RAMP_TARGET;
+      var THRESH = []; var acc = TA;
+      for (var hi = 0; hi < HOLD.length; hi++) { acc += HOLD[hi]; THRESH.push(acc); }
+      var END = THRESH[THRESH.length - 1] + POST_FLIP;
+      function rampCurve(p) {   // slow to start, fast through the middle, slow again at the end
+        return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      }
+      function valueAt(el) {
+        if (el < TA) return Math.round(RAMP_TARGET * rampCurve(el / TA));
+        for (var i = 0; i < THRESH.length; i++) if (el < THRESH[i]) return RAMP_TARGET + i;
+        return 500;
+      }
+      // the bar glides continuously the whole time (no discrete jumps), independent of the
+      // digits' stepped flips, and reaches exactly 100% the instant the digits lock on 500
+      function barFracAt(el) {
+        if (el < TA) return rampCurve(el / TA) * (RAMP_TARGET / 500);
+        var p = Math.min(Math.max((el - TA) / (END - TA), 0), 1);
+        return (RAMP_TARGET + REMAIN * rampCurve(p)) / 500;
+      }
+      function frame(t) {
+        if (start === null) start = t;
+        var el = t - start;
+        render(valueAt(el));
+        if (barFill) barFill.style.width = (barFracAt(el) * 100).toFixed(3) + '%';
+        if (el < END) requestAnimationFrame(frame);
+        else {
+          digits.forEach(function (g) {                        // clean final lock on 500
+            g.busy = false; g.shown = g.target; setStatic(g, g.target);
+            g.leafTop.style.opacity = g.leafBot.style.opacity = '0';
+          });
+          if (barFill) barFill.style.width = '100%';
+          if (barDot) barDot.style.opacity = '1';    // the dot lands exactly as the flip settles on 500
+        }
+      }
+      requestAnimationFrame(frame);
+    }, 700);
+  })();
+
+  /* ---------- apples: ~939 apples poured down through Matter.js (real rigid-body physics --
+     gravity, circle-circle collision, restitution/friction, sleeping) so the pile shape falls
+     out of an actual solver rather than a hand-rolled approximation of one. ---------- */
+  (function () {
+    var field = document.getElementById('apple-field');
+    if (!field) return;
+    // real apple icon (game-icons.net, Lorc "shiny-apple", CC BY 3.0), used once via <symbol>
+    // and referenced by every apple so ~939 DOM nodes stay cheap to build
+    var applePath = 'M255.563 19.75c-13.31 57.822-16.625 100.686-13.907 156.938l18.813.03c3.31-49.616 18.56-88.618 ' +
+      '45.874-133-4.86-9.134-13.465-14.956-23.813-18.78-8.908-3.293-18.82-4.77-26.967-5.188zm98.75 94.156c-9.067.133-' +
+      '18.416 1.204-28 3.313-13.76 3.026-27.176 7.952-39.97 14.56-3.905 14.615-6.346 29.844-7.406 46.595 1.25-.216 ' +
+      '2.51-.432 3.75-.688 24.965-5.135 43.288-17.244 52.344-32.25-.298 19.943-25.12 41.175-56.81 49.97-2.525.7-5.086 ' +
+      '1.34-7.69 1.874-44.29 9.114-85.27-8.315-99.842-35.343-4.366-8.097-5.176-16.436-3.094-24.343 9.834 17.98 30.633 ' +
+      '31.534 55.25 38.156-.748-16.246-.974-31.515-.625-46.406-11.004-4.878-22.38-8.548-33.97-10.875-11.18-2.246-' +
+      '22.044-3.414-32.094-3.064-71.757 2.496-132.96 64.885-131.78 154.688C25.73 373.264 101.85 472.424 190 490.124c' +
+      '11.178 2.246 24.934 3.42 37.22 2.282 12.283-1.138 22.775-4.762 28.405-10.156l5.97-5.72 6.405 5.25c5.378 4.426 ' +
+      '16.542 8.05 29.125 9.22 12.583 1.17 26.514.195 37.344-2.188 87.533-19.257 153.047-119.08 151.686-222.718-.677-' +
+      '51.615-19.354-93.606-48.22-120.22-21.647-19.96-48.954-31.508-79.748-31.968-1.284-.02-2.58-.02-3.875 0zm49.906 ' +
+      '41.125c53.69 32.478 75.357 115.23 37.092 200.626-30.48 68.017-93.18 121.256-140.843 118.75C411.304 407.96 ' +
+      '458.192 271.063 404.22 155.03z';
+    var defsHost = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    defsHost.setAttribute('width', '0'); defsHost.setAttribute('height', '0');
+    defsHost.style.position = 'absolute';
+    defsHost.innerHTML = '<defs><symbol id="appleIcon" viewBox="0 0 512 512"><path fill="' + coral + '" d="' + applePath + '"></path></symbol></defs>';
+    field.appendChild(defsHost);
+
+    var N = 939, els = [];
+    for (var k = 0; k < N; k++) {
+      var a = document.createElement('div');
+      a.className = 'apple';
+      a.innerHTML = '<svg viewBox="0 0 512 512" aria-hidden="true"><use href="#appleIcon"></use></svg>';
+      field.appendChild(a); els.push(a);
+    }
+    var started = false;
+    // seeded PRNG (mulberry32) so the initial conditions are the same on every load
+    var seed = 41;
+    function rnd() {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+    window.__dropApples = function () {
+      if (started) return; started = true;
+      if (!window.Matter) return;   // matter.min.js failed to load -- fail quiet, not loud
+      var W = field.clientWidth, H = field.clientHeight;
+      // size the apples so ~N of them fill roughly the field's area, then set the element
+      // size directly -- keeps each of the 939 DOM nodes free of any per-instance CSS
+      var aw = Math.max(7, Math.min(40, Math.sqrt(W * H * 0.85 / N))), r = aw / 2;
+      els.forEach(function (el) { el.style.width = el.style.height = aw + 'px'; });
+
+      var Engine = Matter.Engine, Bodies = Matter.Bodies, Body = Matter.Body, Composite = Matter.Composite;
+      var engine = Engine.create();
+      engine.gravity.y = 1.5;   // faster than earth-normal, but not so fast the crowd outruns the solver
+      // sleeping lets the solver stop touching a body once it's at rest -- without it, all
+      // ~939 apples keep getting fully re-solved every substep for the entire animation, which
+      // is what was making things choppy. Substepping (below) resolves contacts while they're
+      // still shallow, so pairs shouldn't be going to sleep mid-overlap the way they were before.
+      engine.enableSleeping = true;
+      engine.positionIterations = 20;
+      engine.velocityIterations = 10;
+
+      // thick, offscreen floor + side walls -- fast movers can tunnel through a thin one
+      var wall = 240;
+      Composite.add(engine.world, [
+        Bodies.rectangle(W / 2, H + wall / 2, W + wall * 2, wall, { isStatic: true }),
+        Bodies.rectangle(-wall / 2, H / 2, wall, H * 2, { isStatic: true }),
+        Bodies.rectangle(W + wall / 2, H / 2, wall, H * 2, { isStatic: true })
+      ]);
+
+      var bodies = els.map(function (el, i) {
+        // poured from roughly the middle, like water from a jug, rather than scattered evenly
+        // across the whole width -- a triangular distribution (sum of two uniforms) gives a
+        // dense stream down the centre that thins out toward the edges, and the pile spreads
+        // sideways from there under its own weight as it builds up
+        var xFrac = 0.5 + (rnd() + rnd() - 1) * 0.32;
+        var body = Bodies.circle(xFrac * W, -r - (i % 30) * (aw * 0.75), r, {
+          restitution: 0.12, friction: 0.6, frictionStatic: 0.9, frictionAir: 0.01, density: 0.001
+        });
+        Body.setAngle(body, rnd() * Math.PI * 2);
+        Body.setAngularVelocity(body, (rnd() - 0.5) * 0.25);
+        Body.setVelocity(body, { x: (rnd() - 0.5) * 3, y: 0 });
+        return { body: body, el: el, added: false, rendered: false, opacitySet: false };
+      });
+      // poured in fast waves -- 939 individually staggered spawns would take minutes, and
+      // dropping them all in one instant overwhelms the solver (that's what was landing
+      // overlapping pairs at the bottom), so this spreads them over a few seconds in smaller
+      // batches, added into the world progressively below
+      var spawn = bodies.map(function (b, i) { return 0.05 + Math.floor(i / 4) * 0.03 + rnd() * 0.015; });
+
+      var FIXED = 1000 / 60, SUBSTEPS = 4, SUBSTEP = FIXED / SUBSTEPS, acc = 0, tsim = 0, last = performance.now();
+      function frame(now) {
+        acc += Math.min(now - last, 100); last = now;
+        while (acc >= FIXED) {
+          tsim += FIXED / 1000;
+          for (var i = 0; i < N; i++) {
+            var bb = bodies[i];
+            if (!bb.added && tsim >= spawn[i]) { bb.added = true; Composite.add(engine.world, bb.body); }
+          }
+          // running several smaller updates per frame (rather than one 16ms step) is what
+          // actually fixes bodies crunching into each other in the dense, fast-falling centre
+          // of the pour -- it catches contacts while they're still shallow instead of letting
+          // fast-closing apples tunnel a few pixels deep before the next collision check
+          for (var s = 0; s < SUBSTEPS; s++) Engine.update(engine, SUBSTEP);
+          acc -= FIXED;
+        }
+        var allDone = true, i, bb, p;
+        for (i = 0; i < N; i++) {
+          bb = bodies[i];
+          if (!bb.added) { allDone = false; continue; }
+          if (bb.body.isSleeping && bb.rendered) continue;   // stop touching the DOM once a body is done
+          // translucent, not solid -- the field runs full-bleed behind the slide's own text,
+          // so the pile needs to stay legible rather than covering it outright
+          if (!bb.opacitySet) { bb.el.style.opacity = '0.22'; bb.opacitySet = true; }
+          p = bb.body.position;
+          bb.el.style.transform = 'translate(' + (p.x - r).toFixed(1) + 'px,' + (p.y - r).toFixed(1) + 'px) rotate(' + bb.body.angle.toFixed(3) + 'rad)';
+          if (bb.body.isSleeping) bb.rendered = true; else allDone = false;
+        }
+        // hard cap guarantees the simulation always halts, whatever the seed
+        if (!allDone && tsim < spawn[N - 1] + 6) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    };
+  })();
+
+  /* ---------- Edinburgh → London walk (scroll-scrubbed, like the pinned charts) ---------- */
+  var walkSet = (function () {
+    var route = document.getElementById('walk-route');
+    var done = document.getElementById('walk-done');
+    var walker = document.getElementById('walker');
+    var cities = document.getElementById('walk-cities');
+    // phones: swap in a portrait route (north at the top) so the map fills the vertical space
+    var vertical = window.matchMedia('(max-width: 700px)').matches;
+    if (vertical) {
+      var dv = 'M 84 30 C 200 64, 236 140, 204 216 C 176 284, 92 322, 112 400 C 130 470, 244 510, 296 574';
+      document.getElementById('walk-map').setAttribute('viewBox', '0 0 360 600');
+      route.setAttribute('d', dv);
+      done.setAttribute('d', dv);
+    }
+    var len = route.getTotalLength();
+    done.style.strokeDasharray = len;
+    var serif = "'Times New Roman', Times, serif";
+    // city stops as fractions of the ~640 km A1 route
+    [['Edinburgh', 0, -14], ['Newcastle', 193 / 640, -14], ['York', 350 / 640, -14], ['London', 1, 26]].forEach(function (c) {
+      var p = route.getPointAtLength(len * c[1]);
+      // portrait: label beside the dot, on whichever side has room; landscape: above/below
+      var pos = vertical
+        ? (p.x > 180 ? 'x="' + (p.x - 16).toFixed(1) + '" y="' + (p.y + 4.5).toFixed(1) + '" text-anchor="end"'
+                     : 'x="' + (p.x + 16).toFixed(1) + '" y="' + (p.y + 4.5).toFixed(1) + '" text-anchor="start"')
+        : 'x="' + p.x + '" y="' + (p.y + c[2]) + '" text-anchor="middle"';
+      cities.innerHTML += '<circle cx="' + p.x + '" cy="' + p.y + '" r="5" fill="none" stroke="#8b8478" stroke-width="2"/>' +
+        '<text ' + pos + ' fill="#8b8478" font-size="12.5" letter-spacing="1.5" font-family="' + serif + '" style="text-transform:uppercase">' + c[0].toUpperCase() + '</text>';
+    });
+    return function (e) {
+      var frac = e;   // line, walker and counter all complete together at London
+      var pt = route.getPointAtLength(len * frac);
+      walker.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ',' + pt.y.toFixed(1) + ')');
+      done.style.strokeDashoffset = (len * (1 - frac)).toFixed(1);
+      var km = Math.round(TOTAL_KM * e);
+      set('walker-km', km + ' km');
+      set('onfoot-km', km);
+    };
+  })();
+  walkSet(0);
+
+  /* ---------- count-up numbers (self-running; any icon grid in the slide fills in sync) ---------- */
+  function startCount(el) {
+    if (el.dataset.started) return;
+    el.dataset.started = '1';
+    var to = parseFloat(el.dataset.to), dec = parseInt(el.dataset.dec || '0', 10);
+    // hold half a second so the slide's fade-in finishes before number, icons and artwork move together
+    var prefix = el.dataset.prefix || '', t0 = null, DUR = 3400, HOLD = 500;
+    var sec = el.closest('section');
+    var grid = sec ? sec.querySelector('[data-grid]') : null;
+    var ics = grid ? Array.prototype.slice.call(grid.querySelectorAll('[data-ic]')) : [];
+    if (grid && gridDone.indexOf(grid) === -1) gridDone.push(grid); // this grid is count-driven now
+    ics.forEach(function (ic) { ic.style.transition = 'opacity 0.35s ease, transform 0.4s cubic-bezier(0.2,0.9,0.3,1.4)'; });
+    var step = function (t) {
+      if (!t0) t0 = t;
+      var p = clamp((t - t0 - HOLD) / DUR, 0, 1);
+      var e = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (dec ? (to * e).toFixed(dec) : Math.round(to * e).toLocaleString('en-US'));
+      var show = Math.round(e * ics.length);
+      for (var i = 0; i < show; i++) { ics[i].style.opacity = '1'; ics[i].style.transform = 'none'; }
+      // any stat artwork in this slide fills with the number: bottom-up, or left-to-right if data-fill="ltr"
+      // (data-fill-max caps the fill short of 100% when the count doesn't reach the artwork's full height,
+      // e.g. 90m of leaves against a 96m Big Ben)
+      var art = sec ? sec.querySelector('.stat-img') : null;
+      if (art) {
+        var fillFrac = e * parseFloat(art.dataset.fillMax || '1');
+        art.style.clipPath = art.dataset.fill === 'ltr'
+          ? 'inset(0 ' + ((1 - fillFrac) * 100).toFixed(2) + '% 0 0)'
+          : 'inset(' + ((1 - fillFrac) * 100).toFixed(2) + '% 0 0 0)';
+      }
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- scroll engine: ticker, pinned scrubs, reveals ---------- */
+  var bx0 = 60, bx1 = 940, bmiMin = 16, bmiMax = 40;
+  var bmiToX = function (m) { return bx0 + (m - bmiMin) / (bmiMax - bmiMin) * (bx1 - bx0); };
+  var erf = function (x) { var s = x < 0 ? -1 : 1; x = Math.abs(x); var t = 1 / (1 + 0.3275911 * x); var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return s * y; };
+  var cdf = function (v) { return 0.5 * (1 + erf((v - B_MEAN) / (B_SD * Math.SQRT2))); };
+  var tlen = 0;
+
+  var pinEls = Array.prototype.slice.call(document.querySelectorAll('section.pin'));
+  var rvEls = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+  rvEls.forEach(function (el, i) { el.dataset.rdelay = (i % 4) * 90; });
+  var gridDone = [];
+
+  function revealTick() {
+    var vh = window.innerHeight;
+    rvEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > 0) {
+        el.style.transitionDelay = (el.dataset.rdelay || 0) + 'ms';
+        el.classList.add('on');
+        el.querySelectorAll('.count').forEach(startCount);
+        el.querySelectorAll('.rbar i').forEach(function (bar) { bar.style.width = bar.dataset.w + '%'; });
+        if (el.id === 'apple-field' && window.__dropApples) window.__dropApples();
+      }
+    });
+    document.querySelectorAll('[data-grid]').forEach(function (grid) {
+      if (gridDone.indexOf(grid) !== -1) return;
+      // grids in a slide with a count-up are driven by the number (in sync); don't fast-fill them
+      var host = grid.closest('section');
+      if (host && host.querySelector('.count')) return;
+      var r = grid.getBoundingClientRect();
+      if (r.top < vh * 0.9 && r.bottom > 0) {
+        grid.querySelectorAll('[data-ic]').forEach(function (ic, i) {
+          ic.style.transition = 'opacity 0.4s ease, transform 0.45s cubic-bezier(0.2,0.9,0.3,1.5)';
+          ic.style.transitionDelay = Math.min(i * 30, 1100) + 'ms';
+          ic.style.opacity = '1';
+          ic.style.transform = 'none';
+        });
+        gridDone.push(grid);
+      }
+    });
+  }
+
+  var raf = 0;
+  function update() {
+    raf = 0;
+    var vh = window.innerHeight, sy = window.scrollY;
+    // Effective progress that PAUSES while a pinned section has scroll locked
+    var eff = sy, effMax = (document.documentElement.scrollHeight - vh) || 1;
+    pinEls.forEach(function (el) {
+      var top = el.offsetTop;
+      var travel = Math.max(0, el.offsetHeight - vh);
+      effMax -= travel;
+      if (sy >= top + travel) eff -= travel;      // past the pin: drop its full travel
+      else if (sy > top) eff -= (sy - top);        // inside the pin: freeze
+    });
+    var p = clamp(eff / (effMax || 1), 0, 1);
+    set('tk-w', (W_START + (W_END - W_START) * p).toFixed(1));
+    set('tk-d', Math.round(p * 500));
+    set('tk-c', Math.round(p * TOTAL_KCAL).toLocaleString('en-US'));
+    var fill = document.getElementById('tk-fill');
+    if (fill) fill.style.width = (p * 100).toFixed(1) + '%';
+
+    // pinned population drift (local scroll progress)
+    var pop = document.getElementById('population');
+    var marker = document.getElementById('bell-marker');
+    if (pop && marker) {
+      var track = pop.offsetHeight - vh;
+      var lp = clamp(-pop.getBoundingClientRect().top / (track || 1), 0, 1);
+      var e = lp < 0.5 ? 2 * lp * lp : 1 - Math.pow(-2 * lp + 2, 2) / 2;
+      var bmiL = 31.5 + (22.8 - 31.5) * e;   // 74.0 kg at 1.80 m
+      marker.setAttribute('transform', 'translate(' + bmiToX(bmiL).toFixed(1) + ',0)');
+      set('bell-bmi', bmiL.toFixed(1));
+      set('bell-bmi-inline', bmiL.toFixed(1));
+      set('bell-pct', Math.round((1 - cdf(bmiL)) * 100));
+      set('bell-cat', bmiL >= 30 ? 'in the obese range' : bmiL >= 25 ? 'in the overweight range' : bmiL >= 18.5 ? 'in the healthy range' : 'in the underweight range');
+      // at the end of the scrub the story lands in the present: "you were" -> "you are" (coral)
+      var verb = document.getElementById('bell-verb');
+      if (verb) { var here = e > 0.985; verb.textContent = here ? 'are' : 'were'; verb.style.color = here ? 'var(--coral)' : ''; verb.style.fontStyle = here ? 'italic' : ''; }
+      var hint = document.getElementById('pop-hint');
+      if (hint) hint.style.opacity = lp < 0.03 ? '1' : '0';   // prompt at the start only, not at the end
+    }
+    // pinned walk scrub (Edinburgh → London)
+    var ofs = document.getElementById('onfoot');
+    if (ofs) {
+      var tof = ofs.offsetHeight - vh;
+      var lpo = clamp(-ofs.getBoundingClientRect().top / (tof || 1), 0, 1);
+      walkSet(lpo < 0.5 ? 2 * lpo * lpo : 1 - Math.pow(-2 * lpo + 2, 2) / 2);
+    }
+    // pinned trend line draw (scrubbed by local scroll)
+    var trendSec = document.getElementById('trend');
+    var tline = document.getElementById('trend-line');
+    if (trendSec && tline) {
+      if (!tlen) { tlen = tline.getTotalLength(); tline.style.strokeDasharray = tlen; }
+      var tr = trendSec.offsetHeight - vh;
+      var lpt = clamp(-trendSec.getBoundingClientRect().top / (tr || 1), 0, 1);
+      var et = lpt < 0.5 ? 2 * lpt * lpt : 1 - Math.pow(-2 * lpt + 2, 2) / 2;
+      tline.style.strokeDashoffset = (tlen * (1 - et)).toFixed(1);
+    }
+    revealTick();
+  }
+  var onScroll = function () { if (!raf) raf = requestAnimationFrame(update); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+
+  /* ---------- gentle JS snapping ----------
+     After scrolling stops, glide to the nearest slide so you never rest between two.
+     Never fires while you're mid-scrub inside a pinned section (trend / on-foot / population).
+     Any real scroll input (wheel/touch/keys) cancels an in-flight glide immediately, so a
+     glide can never fight the user or make reversing direction feel stuck. */
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var snapPins = Array.prototype.slice.call(document.querySelectorAll('section.pin'));
+    var idleTimer = 0, gliding = false, gen = 0;
+
+    function glideTo(target) {
+      gliding = true;
+      var myGen = ++gen;
+      var startY = window.scrollY, dist = target - startY, t0 = null;
+      var dur = Math.min(500, Math.max(200, Math.abs(dist) * 0.55));
+      function frame(t) {
+        if (myGen !== gen) return;               // superseded by user input or a newer glide
+        if (t0 === null) t0 = t;
+        var p = Math.min((t - t0) / dur, 1);
+        var e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;   // ease-in-out
+        window.scrollTo(0, Math.round(startY + dist * e));
+        if (p < 1) requestAnimationFrame(frame);
+        else gliding = false;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function cancelGlide() { gen++; gliding = false; }
+
+    function snap() {
+      if (gliding) return;
+      var y = window.scrollY, vh = window.innerHeight, docH = document.documentElement.scrollHeight;
+      if (y <= 1 || y >= docH - vh - 1) return;
+      for (var i = 0; i < snapPins.length; i++) {          // leave mid-scrub alone
+        var top = snapPins[i].offsetTop, travel = snapPins[i].offsetHeight - vh;
+        if (y > top + 12 && y < top + travel - 12) return;
+      }
+      var best = null, bd = 1e9;
+      for (var j = 0; j < slides.length; j++) {
+        var d = Math.abs(slides[j].offsetTop - y);
+        if (d < bd) { bd = d; best = slides[j].offsetTop; }
+      }
+      if (best !== null && bd > 2 && bd < vh * 1.1) glideTo(best);
+    }
+
+    // any direct user input takes over instantly, even mid-glide
+    ['wheel', 'touchstart', 'touchmove'].forEach(function (ev) {
+      window.addEventListener(ev, cancelGlide, { passive: true });
+    });
+    window.addEventListener('keydown', function (e) {
+      if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].indexOf(e.key) !== -1) cancelGlide();
+    });
+
+    window.addEventListener('scroll', function () {
+      if (gliding) return;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(snap, 160);
+    }, { passive: true });
+  })();
+
+  // cover: fill the descent line on load
+  // (the cover weight line is now driven per-frame by the flip counter, above)
+
+  // safety net: run the reveal pass even if scroll events never fire
+  setInterval(revealTick, 1200);
+})();
+</script>
+</body>
+</html>
